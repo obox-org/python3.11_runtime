@@ -1,0 +1,11 @@
+{
+  "name": "python3.11_runtime",
+  "displayName": "Python 3.11 运行时（内置）",
+  "description": "内置 Python 3.11.9（预装 numpy / pandas / matplotlib），供 api.python 使用",
+  "version": "3.11.9",
+  "author": "obox",
+  "apiVersion": 4,
+  "main": "./index.js",
+  "activationEvents": ["onStartupFinished"],
+  "platforms": ["win32-x64"]
+}

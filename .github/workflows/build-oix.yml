@@ -1,0 +1,70 @@
+name: Build Python runtime oix
+
+# 平台规则：docs/extension-api/oix-platform-rules.md（obox 主仓库）
+# 产物命名：python3.11-<ver>.oix / -win.oix / -win-x64.oix / -win-arm64.oix
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      libs:
+        description: '预装库（空格分隔）'
+        required: false
+        default: 'numpy pandas matplotlib'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: win32-x64
+            runner: windows-latest
+          - platform: win32-arm64
+            runner: windows-11-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install packer dependency
+        run: npm install adm-zip --no-save
+
+      - name: Build .oix
+        shell: pwsh
+        run: |
+          $libs = "${{ github.event.inputs.libs }}"
+          if (-not $libs) { $libs = 'numpy pandas matplotlib' }
+          node scripts/build-runtime.mjs --platform ${{ matrix.platform }} --libs $libs
+
+      - name: Checksums
+        shell: pwsh
+        run: |
+          Get-ChildItem release/*.oix | ForEach-Object {
+            "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)" |
+              Out-File -Append -Encoding utf8 release/SHA256SUMS.txt
+          }
+          Get-Content release/SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: oix-${{ matrix.platform }}
+          path: |
+            release/*.oix
+            release/SHA256SUMS.txt
+
+      - name: Publish release assets
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.oix
+            release/SHA256SUMS.txt
+          fail_on_unmatched_files: true
