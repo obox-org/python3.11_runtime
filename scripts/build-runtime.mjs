@@ -34,7 +34,9 @@ if (!(platform in SUFFIX)) {
   console.error(`[pack] 未知平台：${platform}（规则见 docs/extension-api/oix-platform-rules.md）`)
   process.exit(1)
 }
-const arch = platform.split('-')[1] ?? 'x64'
+const archToken = platform.split('-')[1] ?? 'x64'
+// python.org 命名与 Node 不同：x64 → amd64（arm64 同名）
+const arch = archToken === 'x64' ? 'amd64' : archToken
 const manifestSrc = JSON.parse(readFileSync(join(repo, 'manifest.json'), 'utf8'))
 const pythonVersion = manifestSrc.version
 const name = manifestSrc.name
