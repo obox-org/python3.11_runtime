@@ -7,5 +7,7 @@
   "apiVersion": 4,
   "main": "./index.js",
   "activationEvents": ["onStartupFinished"],
-  "platforms": ["win32-x64"]
+  "platforms": ["win32-x64"],
+  "arch": "x64",
+  "python": "3.11"
 }

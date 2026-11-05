@@ -75,7 +75,9 @@ mkdirSync(stage, { recursive: true })
 const manifest = {
   ...manifestSrc,
   platforms: [platform],
-  python: { arch, python: shortVersion }
+  // 清单里的 python 声明是**顶层** `arch` + `python`（见 oixCore → validatePythonDeclaration）
+  arch,
+  python: shortVersion
 }
 writeFileSync(join(stage, 'manifest.json'), JSON.stringify(manifest, null, 2))
 cpSync(join(repo, 'runtime.json'), join(stage, 'runtime.json'))
