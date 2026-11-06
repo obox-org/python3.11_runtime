@@ -21,7 +21,8 @@
 - obox 按 `runtime.json` 判定它是运行时包并改投系统扩展根；`author` 必须是 `obox`；
 - 按机器安装到 `Program Files` 时该目录需要管理员权限（否则报 `need-admin`）——
   用「仅为我安装」装 obox，或以管理员身份运行 obox 后再装；
-- 升级 obox 时安装器会备份并搬回带 `runtime.json` 的目录（从 ≤2.2.x 升到 2.3.0 的第一次除外）；
+- 升级 obox 时安装器会先备份、装完再搬回带 `runtime.json` 的目录（备份在新安装器里、早于旧卸载器，
+  因此**从任何旧版本升级都覆盖**）；
 - 同一 Python 版本只允许一个内置运行时（`runtime-version-conflict`）；
   2.2.x 装在用户目录的 `python3.11_runtime.obox` 重装一次即自动迁移。
 
