@@ -11,7 +11,19 @@
 - `.github/workflows/build-oix.yml`：矩阵 `win32-x64` / `win32-arm64`；push tag `v*` 发版，
   手动触发只出 artifact。
 
-产物命名：`python3.11-3.11.9-win-x64.oix` / `python3.11-3.11.9-win-arm64.oix`。
+产物命名：`python3.11_runtime-3.11.9-win-x64.oix` / `python3.11_runtime-3.11.9-win-arm64.oix`。
+
+## 安装（obox 2.3 起：落系统扩展目录）
+
+运行时包是**用户手动安装**的 `.oix`（不随 obox 打包），但落点与系统扩展一致：
+
+- 目录：`<安装目录>/extensions/python3.11_runtime`（目录名 = 清单 `name`，**不带作者后缀**）；
+- obox 按 `runtime.json` 判定它是运行时包并改投系统扩展根；`author` 必须是 `obox`；
+- 按机器安装到 `Program Files` 时该目录需要管理员权限（否则报 `need-admin`）——
+  用「仅为我安装」装 obox，或以管理员身份运行 obox 后再装；
+- 升级 obox 时安装器会备份并搬回带 `runtime.json` 的目录（从 ≤2.2.x 升到 2.3.0 的第一次除外）；
+- 同一 Python 版本只允许一个内置运行时（`runtime-version-conflict`）；
+  2.2.x 装在用户目录的 `python3.11_runtime.obox` 重装一次即自动迁移。
 
 ## 本地构建
 
